@@ -1,4 +1,4 @@
-pyprov
+PyProv
 ======
 
 Provenance store reference implementation for PROV Data Model
