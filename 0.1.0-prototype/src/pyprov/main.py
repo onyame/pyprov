@@ -20,7 +20,7 @@ Created on 26.03.2013
    limitations under the License.
 '''
 import pyprov.server, pyprov.neo4j
-import pyprov.software_dev_model as sdm
+import pyprov.general_model as genm
 
 class Controller(object):
     """Control the entire program (data flow, process chain etc.)
@@ -55,18 +55,18 @@ class DevFactory(object):
     def __init__(self, graph_db):
         self.graph_db = graph_db
     
-    def create(self, sdm_type, *args, **kwargs):
+    def create(self, model_type, *args, **kwargs):
         """Determine process type and start storing
         
         This method is the main external interface to write provenance data.
         All views from the webserver write their information with this method
-        using the 'sdm_type' to define the type of information and 
+        using the 'model_type' to define the type of information and 
         the arguments and keyword arguments to hand over the data.
         
         arguments:
-        sdm_type -- determine which method to call
+        model_type -- determine which method to call
         """
-        if sdm_type == 'general':
+        if model_type == 'general':
             return self._create_general(*args, **kwargs)
     
     def _create_general(self, *args, **kwargs):
@@ -81,7 +81,7 @@ class DevFactory(object):
         keyword arguments:
         None
         """
-        process = sdm.Process(*args, **kwargs)
+        process = genm.Process(*args, **kwargs)
         process_node = self.graph_db.create_process(process.name)
         
         actor_node = self.graph_db.find_node('identifier', process.actor.identifier)

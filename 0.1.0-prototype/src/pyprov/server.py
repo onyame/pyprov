@@ -1,7 +1,7 @@
 '''
 The webserver module.
 
-A Webserver reads its configuration from a file, register the views it should display and starts the application.
+A Webserver registers the views it should display and starts the application.
 
 Currently implemented using Flask (http://flask.pocoo.org/).
 
@@ -40,13 +40,11 @@ class Server(object):
         Setup for the flask server.
         
         First creates the so called app, then all views.
-        Configuration is read via a config file.  
         """
         self.app = Flask(__name__)
 
         rest_view = views.RestView()
         grem_view = views.GremlinView()
-        
         
         self.app.register_blueprint(rest_view)
         self.app.register_blueprint(grem_view)

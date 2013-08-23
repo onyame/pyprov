@@ -31,7 +31,7 @@ class View(Blueprint):
 
 class RestView(View):
     """
-    Set up path to save provenance informations about software development processes
+    Set up path to save provenance informations about processes
     """
     def __init__(self):
         #TODO: add version number in uri
@@ -46,12 +46,13 @@ class RestView(View):
         return 'Welcome to PyPROVs REST-Interface!'
     
     def general(self):
-        """Save Build information.
+        """Save general process information.
         
         required params:
-            revision - the number of the corresponding revision (int)
-            result   - the return code of the build (int)
-            maven    - the used version of maven for the build (string)
+            process - the name of the process
+            inp     - a list of inputs with an identifier and a version number
+            outp    - a list of outputs with an identifier and a version number
+            actor   - the associated user
             
         optional params:
             None
