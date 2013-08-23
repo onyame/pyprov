@@ -1,0 +1,8 @@
+[run]
+branch = True
+
+[html]
+directory = build/htmlcov
+
+[xml]
+output = build/coverage.xml

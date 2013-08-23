@@ -1,0 +1,7 @@
+include distribute_setup.py
+recursive-exclude dev *
+
+exclude .project
+exclude .pydevproject
+exclude requieres-dev.txt
+recursive-exclude test *
