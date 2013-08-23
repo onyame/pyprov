@@ -1,8 +1,0 @@
-# Lists essential package which are required for development
-# To install run: pip install -r requires-dev.txt
-pylint>=0.18.1
-pytest>=2.3
-pytest-cov>=1.5
-coverage>=3.5
-mock>=1.0.1
-Sphinx>=1.0.3
