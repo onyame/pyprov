@@ -1,0 +1,39 @@
+DEVELOPER GUIDE
+
+a short overview of the modules
+* main.py - the main python module to start the application
+	It implements two classes, the Controller to start the server and database module and the ModelFactory to transform input data to internal objects and send them to the database.
+* server.py - the webserver using Flask
+	The two important methods here are 'create_app' and 'write_prov'.
+	The method 'create_app' creates the views for our Front-End and registers them to our app. Currently, we have two views, one for the REST-Interface and one for a GREMLIN-Query-Interface. Those are higher-level views and each contains a subset of views.
+	The 'write_prov' method helps to forward input data from every view to the factory
+* views.py - all current views for PyProv
+	Here we define the URL-rules for our views. Every view should inherit from the class 'View', so it got access to the server class.
+	In the subclasses, for example RestView, you can set URL-rules, define HTML-request methods and implement the input handling. How to implement new views will be described below. Also note that every View-subclass should have a prefix ('/prov' for the RestView, '/gremlin' for the GremlinView).
+* provenance_model.py - core components of the PROV-Datamodel (PROV-DM)
+	This module holds the core components of the standardized provenance datamodel and all its parameters. It currently has no use in PyProv apart from implementing superclasses for the general model. In the future, it should ensure correct implementation and usage of PROV-DM.
+* general_model.py - the custom provenance model
+	To define our own model, we use this module to implement all future nodes as classes and their properties as class parameters. Currently, it holds classes for a Process, Inp (input) and Outp (output) variables and a Actor.
+* neo4j.py - the connection module to the Neo4J database
+	Two classes are implemented here, one is an abstract ProvenanceStore class and the other the actual implemenation for connection, writing and searching the database.
+	The class 'ProvenanceStore' serves as a superclass for all possible underlying database-backends. It implements Pythons abstract meta class concept. First, it implements methods to write the objects from the custom model (for now, process, input, output and actor) and then to do so, it uses the abstract method 'create_node'. Note, that you have to specify here, what kind of provenance component you have (prov_type) and what kind of component from your custom datamodel (genm_type).
+	The class 'Neo4JServer' is then the implemenation for the actual provenance store. Here we define how the connection to the corresponding database is set up and how to write and search for nodes and relationships
+
+___________________________
+HOWTO develop new views
+
+0. create a new view (optional; you can also use the existing RestView for the beginning. Skip this point, if you want to do so)
+	To setup a new view, you have to write a new class "FooView" and let it inherit from "View". In the constructor, call the super class constructor and pass a name, an import name (both for the underlying Blueprint object) and an url prefix. 
+1. define rules for views
+	After you created a new view, you can define your url rules. You should create an index as a starting point and then add as many following rules. The method 'add_url_rule' takes three parameters, first the desired rule, then the endpoint and at last the corresponding method. The option 'methods' is also very useful as it describes what request methods should be allowed by the method (default is GET, every not allowed method will invoke a '403 Forbidden' response).
+	Keep in mind that all rules will follow the prefix of the view. So if your prefix is '/foo' and your rule is '/bar', you get the url 'http://localhost:5000/foo/bar'
+2. implement view methods
+	For every declared rule in the constructor you have to implement a corresponding view method. Here you can distinguish different request methods and what parameters you expect. For further information, see the Flask documentation (http://flask.pocoo.org/)
+	At this point, it is import to pass all data and the type of data to the server using the method 'write_prov'. The server will forward all data to the ModelFactory.
+3. implement custom model
+	At this point, you should start to implement your model. Just follow the examples in general_model.py
+4. write factory methods
+	The current idea is that every rule has its own method in the factory. As you pass the parameter 'model_type' to the public 'create'-method, the factory knows which private method to call. You can then start to create the objects from your model in the private methods and write nodes and relationships.
+5. implement node creation methods
+	At last, you have to implement the methods to write nodes in the ProvenanceStore class. Remember to add the provenance type and your model type as well as all parameters to the 'create_node'-method. This method will take all your parameters as keyword arguments (**properties) and add them as properties to the node.
+	

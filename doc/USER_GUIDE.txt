@@ -1,0 +1,48 @@
+How to use PyProv
+
+Configuration
+* In the file 'neo4j.py' at line 25: change the URL to your Neo4J Server
+	the default is 'http://localhost:7474/db/data/' and is the address for the local running service
+-----
+Running PyProv
+
+Pre-Condition
+* A running Neo4J Server
+
+Running the application
+* Run main.py
+
+Terminating the application
+* Exit PyProv
+
+-----
+Sending data to PyProv
+
+* The only currently implemented view for PyProv is for saving general provenance information. The URL for that is 'http://localhost:5000/prov/general'.
+* If you send a request via GET, you'll get a string containing a short description about the required and optional parameters.
+* To save data, you have to send a request via POST containing all required data in JSON-format. Make sure to set the Content-Type to 'application/json'.
+
+Here is an example, how the JSON-data could look like:
+{
+	"process":"process1",
+	"input":[
+		{
+			"identifier":"id1",
+			"version":1
+		},
+		{
+			"identifier":"id1",
+			"version":2
+		}
+	],
+	"output":[
+		{
+			"identifier":"id3",
+			"version":1
+		}
+		],
+	"actor":"clemens"	
+}
+Note that for general provenance, you have to specify one process, one or more input and output parameters and one actor
+
+If the request was correctly processed and all data saved, you will get an '200 OK'-Status response containing a string 'True'.
